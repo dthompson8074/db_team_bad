@@ -152,8 +152,6 @@ while(count < 30):
     if (flag == 1):
         break
 
-print(count)
-
 plt.scatter(i_long, i_lat, c= color_assign,alpha=0.1,s=5)
 plt.scatter(k_long,k_lat,c= 'grey', s=200)
 plt.scatter(police_long,police_lat, c= colors_cluster, s=200)
@@ -161,17 +159,15 @@ plt.title('Final Cluster Centers vs. Police Stations')
 plt.imshow(img,extent = [-77.6,-76.81,38.885,39.385])
 plt.draw()
 
-
 for i in range(len(i_long)):
     police_sse += sse(i_long[i],police_long[int(police_assign[i])],i_lat[i],police_lat[int(police_assign[i])])
     k_sse += sse(i_long[i],k_long[int(cluster_assign[i])],i_lat[i],k_lat[int(cluster_assign[i])])
 
-
-
-
 plt.waitforbuttonpress()
 plt.clf
 
-print(float(police_sse))
-print(k_sse)
-
+print('\nIterations: {}'.format(count))
+print("Sum of Squares Error(degrees)")
+print('Police Stations: {:8.6f}'.format(police_sse))
+print('Final Custer Centers: {:8.6f}'.format(k_sse))
+print('Percent decrease: {}%'.format(int(100*(1-(k_sse/police_sse)))))
