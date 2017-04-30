@@ -31,22 +31,23 @@ def sql_select(query):
 #Plot for Crime Comparison: 2014 & 2015
 crimeData2014 = []
 crimeData2015 = []
-months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+month = 1
 
-for month in months:
-    select_str = "SELECT COUNT([Dispatch Date   Time]) AS myCount\
+while month <= 12:
+    select_str = "SELECT COUNT([Dispatch Date/Time]) AS monthlyCount\
             FROM dbo.crime\
-            WHERE [Dispatch Date   Time] BETWEEN" + " " + "'" + month + "/01/2014' AND" + " "+ "'" + month +"/31/2014'"
+            WHERE Month([Dispatch Date/Time]) = " + str(month) + " " + "AND Year([Dispatch Date/Time]) = 2014;"
     data = sql_select(select_str)
-    crimeData2014.append(data[0][0])
+    crimeData2014.append(data[0])
     
-    select_str = "SELECT COUNT([Dispatch Date   Time]) AS myCount\
+    select_str = "SELECT COUNT([Dispatch Date/Time]) AS monthlyCount\
             FROM dbo.crime\
-            WHERE [Dispatch Date   Time] BETWEEN" + " " + "'" + month + "/01/2015' AND" + " "+ "'" + month +"/31/2015'"
+            WHERE Month([Dispatch Date/Time]) = " + str(month) + " " + "AND Year([Dispatch Date/Time]) = 2015;"
     data = sql_select(select_str)
-    crimeData2015.append(data[0][0])
+    crimeData2015.append(data[0])
     
-
+    month+=1
+    
 months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
 CrimeComparison = plt.figure(1)
@@ -64,42 +65,55 @@ plt.legend()
 plt.ylim(0,15000)
 plt.grid(True)
 CrimeComparison.show()
-plt.savefig('CrimeComparison.png')
+#plt.savefig('CrimeComparison.png')
+
 ################################################################################
-#pie chart for District Count Table
-select_str = "Select * FROM [dbo].[District Count Table]"
+
+#Pie Chart for District Percentage Table JOINED with Police Districts
+
+select_str = "Select * FROM [dbo].[District Percentage Table] DBT\
+              LEFT OUTER JOIN [dbo].[Police Districts] PD\
+              ON DBT.[Police District Number] = PD.[Police District Number]"
+
 districts = []
-districtData = []
+districtPercentage = []
 view = sql_select(select_str)
 
 for row in view:
-    districts.append(row[0])
-    districtData.append(row[1])
+    districts.append(row[0]+"-"+row[3])
+    districtPercentage.append(row[1])
 
-crimeTotal = sum(districtData)
-
-#obtaining the percentages
-for index,crimenum in enumerate(districtData):
-    districtData[index] = float(float(crimenum) / float(crimeTotal))*100
- 
 # Data to plot
 DistrictDataPie = plt.figure(2)
 labels = districts
-sizes = districtData
-colors = ['red', 'white', 'skyblue', 'blue','yellow','cyan','lightcoral','darkgreen'] 
-explode = (0, 0, 0, 0,0,0.1,0,0)  # explode 1st slice
+sizes = districtPercentage
+colors = ['blue','yellow', 'cyan','lightcoral','green','red'] 
+explode = (0, 0, 0.1, 0,0,0)  # explode 3rd slice
 
 # Plot
-#patches = plt.pie(sizes, colors=colors,
-#        autopct='%1.1f%%', shadow=True, startangle=180)
 
 patches, texts = plt.pie(sizes,explode=explode, colors=colors,
-        shadow=True, startangle=180)
-plt.pie(sizes,explode=explode,colors=colors,autopct='%1.1f%%',startangle=180)
+        shadow=True, startangle=225)
+plt.pie(sizes,explode=explode,colors=colors,autopct='%1.1f%%',startangle=225)
 
 plt.legend(patches,labels,loc="best")
 plt.axis('equal')
 plt.tight_layout()
 plt.title("Crime Percentage Distribution Across Districts: 2014 & 2015")
 DistrictDataPie.show()
-plt.savefig('CrimePercentages.png')
+#plt.savefig('CrimePercentages.png')
+################################################################################
+
+#Bar Chart for Common Offenses: 2014 & 2015
+
+crimeTypes = ["LARCENY","ASSAULT","AUTO THEFT","ARSON", "VANDALISM","WEAPON",
+                "DRUG","JUVENILE","FAMILY","CONDUCT","DEATH"]
+                
+crimeStats = []
+
+for crime in crimeTypes:
+    select_str = "SELECT COUNT([Crime Description]) AS crimeCount FROM [dbo].[crime]\
+                  WHERE [Crime Description] LIKE '%" + crime + "%'"
+                  
+    crimeStats.append(sql_select(select_str)[0])
+    
