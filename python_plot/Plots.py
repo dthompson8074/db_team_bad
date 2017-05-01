@@ -29,22 +29,15 @@ def sql_select(query):
 
 ################################################################################
 #Plot for Crime Comparison: 2014 & 2015
-crimeData2014 = []
-crimeData2015 = []
+crimeData = []
 month = 1
 
 while month <= 12:
     select_str = "SELECT COUNT([Dispatch Date/Time]) AS monthlyCount\
             FROM dbo.crime\
-            WHERE Month([Dispatch Date/Time]) = " + str(month) + " " + "AND Year([Dispatch Date/Time]) = 2014;"
+            WHERE Month([Dispatch Date/Time]) = " + str(month) + " " + ";"
     data = sql_select(select_str)
-    crimeData2014.append(data[0][0])
-    
-    select_str = "SELECT COUNT([Dispatch Date/Time]) AS monthlyCount\
-            FROM dbo.crime\
-            WHERE Month([Dispatch Date/Time]) = " + str(month) + " " + "AND Year([Dispatch Date/Time]) = 2015;"
-    data = sql_select(select_str)
-    crimeData2015.append(data[0][0])
+    crimeData.append(data[0][0])
     
     month+=1
     
@@ -52,25 +45,21 @@ months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec
 
 CrimeComparison = plt.figure(1)
 bar_width = 0.35
-plt.title("Crime Comparison: 2014 & 2015")
+plt.title("Monthly Crime Occurrences: 2014 & 2015")
 plt.xlabel("Months")
 plt.ylabel("# of Crimes")
-x_pos = np.arange(len(crimeData2014))
+x_pos = np.arange(len(crimeData))
 
-bar2014 = plt.bar(x_pos,crimeData2014,bar_width,color='b',alpha=0.8,label='2014')
-bar2015 = plt.bar(x_pos+bar_width,crimeData2015,bar_width,color='r',alpha=0.8,label='2015')
+bar2014 = plt.bar(x_pos,crimeData,bar_width,color='r',alpha=0.8)
 
-if max(crimeData2014) > max(crimeData2015):
-    limit = max(crimeData2014) + 100
-else:
-     limit = max(crimeData2015) + 100   
-
-plt.xticks(x_pos+float(bar_width/2),months)
+limit = max(crimeData) + 100
+ 
+plt.xticks(x_pos,months)
 plt.legend()
 plt.ylim(0,limit)
 plt.grid(True)
-mngr = plt.get_current_fig_manager()
-mngr.window.setGeometry(0,0,450,600)
+#mngr = plt.get_current_fig_manager()
+#mngr.window.setGeometry(0,0,450,600)
 CrimeComparison.show()
 #plt.savefig('CrimeComparison.png')
 
@@ -107,8 +96,8 @@ plt.legend(patches,labels,loc="best")
 plt.axis('equal')
 plt.tight_layout()
 plt.title("Crime Percentage Distribution Across Districts: 2014 & 2015")
-mngr = plt.get_current_fig_manager()
-mngr.window.setGeometry(450,0,450,600)
+#mngr = plt.get_current_fig_manager()
+#mngr.window.setGeometry(450,0,450,600)
 DistrictDataPie.show()
 #plt.savefig('CrimePercentages.png')
 ################################################################################
@@ -152,6 +141,6 @@ plt.legend()
 plt.ylim(0,limit)
 plt.grid(True)
 
-mngr = plt.get_current_fig_manager()
-mngr.window.setGeometry(900,0,500,600)
+#mngr = plt.get_current_fig_manager()
+#mngr.window.setGeometry(900,0,500,600)
 offenseBarChart.show()
