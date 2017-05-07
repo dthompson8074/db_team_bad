@@ -33,12 +33,12 @@ def sql_select(query):
     columns = cursor.fetchall()
     return columns
 
-select_str = "SELECT Latitude,Longitude FROM crime WHERE (Longitude Between -77.6 AND -76.81) AND (Latitude between 38.885 AND 39.8 ) AND Agency like '%MC%'"
+select_str = "SELECT Latitude,Longitude,[Police District Number] FROM crime WHERE (Longitude Between -77.6 AND -76.81) AND (Latitude between 38.885 AND 39.8 ) AND Agency like '%MC%'"
 
 #k-mean parameters
 dim = 2
 
-k = 10
+k = 6
 kxdim = 4
 precision = .001
 
@@ -56,14 +56,18 @@ center_z = 0
 center_w = 0
 
 color_assign = []
+dict = {'1D':0,'2D':1,'3D':2,'4D':3,'5D':4,'6D':5,'TPPD':2}
 
+police_assign=[]
+cluster_assign =[]
 #clusters
-police_long = [-77.093449 , -77.048494,-76.943832,-76.990898,-77.064992,-77.148360,-77.132083,-77.234093,-77.262873, -77.236469]
-police_lat =  [38.983552, 39.058405,39.078524,39.045244,39.149304,39.083774,39.098038,39.149697,39.184389,39.113024]
-k_long = [-77.093449 , -77.048494,-76.943832,-76.990898,-77.064992,-77.148360,-77.132083,-77.234093,-77.262873, -77.236469]
-k_lat = [38.983552, 39.058405,39.078524,39.045244,39.149304,39.083774,39.098038,39.149697,39.184389,39.113024]
+police_long = [-77.236469,-77.093449 ,-76.990898,-77.048494,-77.262873, -77.234093]
 
-colors_cluster = ['red','pink','black','blue','cyan','orange','purple','green','magenta','teal']
+police_lat =  [39.113024, 38.983552,39.045244,39.058405,39.184389,39.149697]
+k_long = [-77.236469,-77.093449 ,-76.990898,-77.048494,-77.262873, -77.234093]
+k_lat =[39.113024, 38.983552,39.045244,39.058405,39.184389,39.149697]
+
+colors_cluster = ['red','black','blue','orange','purple','green']
 
 #data
 columns = sql_select(select_str)
@@ -71,11 +75,11 @@ columns = sql_select(select_str)
 i_long = []
 i_lat = []
 for row in columns:
-       i_long.append(row[1])
-       i_lat.append(row[0])
-
-for i in range(len(i_long)):
-    color_assign.append('grey')
+    i_long.append(row[1])
+    i_lat.append(row[0])
+    color_assign.append(colors_cluster[dict[row[2]]])
+    cluster_assign.append(dict[row[2]])
+    police_assign.append(dict[row[2]])
 
 for i in range(len(k_long)):
     cluster_sum_z.append(0)
@@ -84,8 +88,6 @@ for i in range(len(k_long)):
 
 print("incident count:")
 print(len(columns))
-
-cluster_assign = np.random.rand(len(i_long))
 
 #initialize plot
 plt.ion()
@@ -115,8 +117,7 @@ while(count < 30):
     
         cluster_size[close_k]+=1
         color_assign[i] = colors_cluster[close_k]
-        if(count == 0):
-            police_assign = cluster_assign
+       
 
     plt.scatter(i_long, i_lat, c= color_assign,alpha=0.1,s=5)
     plt.scatter(k_long,k_lat, c='grey', s=200)

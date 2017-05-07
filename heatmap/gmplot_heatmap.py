@@ -7,7 +7,7 @@ import pyodbc
 import gmplot
 from scipy.misc import imread
 
-img = imread("moco_map2.png")
+
 server = 'davidtho.database.windows.net'
 database = 'davidtho_db'
 username = 'davidtho'
@@ -34,7 +34,7 @@ def sql_select(query):
     columns = cursor.fetchall()
     return columns
 
-select_str = "SELECT Latitude,Longitude FROM crime WHERE (Longitude Between -77.6 AND -76.81) AND (Latitude between 38.885 AND 39.8 )"
+select_str = "SELECT Latitude,Longitude FROM crime WHERE (Longitude Between -77.6 AND -76.81) AND (Latitude between 38.885 AND 39.8 )AND Agency like '%MC%'"
 
 #k-mean parameters
 dim = 2
