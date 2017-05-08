@@ -40,7 +40,7 @@ dim = 2
 
 k = 6
 kxdim = 4
-precision = .001
+precision = .0001
 
 count=0
 close_k = 0
@@ -95,8 +95,10 @@ plt.scatter(i_long, i_lat, c= color_assign,alpha=0.3,s = 5)
 plt.title('Unassigned Incident Locations')
 plt.imshow(img,extent = [-77.6,-76.81,38.885,39.385])
 plt.waitforbuttonpress()
-plt.title('Police Stations as Initial Cluster Centers')
-plt.scatter(k_long,k_lat, c=colors_cluster, s=200)
+plt.title('Incident Locations by Police District with District Stations')
+plt.scatter(k_long,k_lat, c='grey', s=200)
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
 plt.waitforbuttonpress()
 plt.clf()
 
@@ -155,9 +157,11 @@ while(count < 30):
 
 plt.scatter(i_long, i_lat, c= color_assign,alpha=0.1,s=5)
 plt.scatter(k_long,k_lat,c= 'grey', s=200)
-plt.scatter(police_long,police_lat, c= colors_cluster, s=200)
-plt.title('Final Cluster Centers vs. Police Stations')
+#plt.scatter(police_long,police_lat, c= colors_cluster, s=200)
+plt.title('Final Cluster Centers & Partitions')
 plt.imshow(img,extent = [-77.6,-76.81,38.885,39.385])
+plt.xlabel("Longitude")
+plt.ylabel("Latitude")
 plt.draw()
 
 for i in range(len(i_long)):
