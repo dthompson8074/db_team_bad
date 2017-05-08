@@ -17,16 +17,6 @@ cnxn = pyodbc.connect('DRIVER='+driver+';PORT=1433;SERVER='+server+';PORT=1443;D
 
 #function definition
 
-# Distance function
-def distance(xi,xii,yi,yii):
-    sq1 = (xi-xii)*(xi-xii)
-    sq2 = (yi-yii)*(yi-yii)
-    return math.sqrt(sq1 + sq2)
-
-def sse(xi,xii,yi,yii):
-    sq1 = (xi-xii)*(xi-xii)
-    sq2 = (yi-yii)*(yi-yii)
-    return sq1+sq2
 #sql
 def sql_select(query):
     cursor = cnxn.cursor()
@@ -36,33 +26,10 @@ def sql_select(query):
 
 select_str = "SELECT Latitude,Longitude FROM crime WHERE (Longitude Between -77.6 AND -76.81) AND (Latitude between 38.885 AND 39.8 )AND Agency like '%MC%'"
 
-#k-mean parameters
-dim = 2
-
-k = 10
-kxdim = 4
-precision = .001
-
-count=0
-close_k = 0
-
-police_sse = 0
-k_sse = 0
-
-cluster_size = np.random.rand(k)
-cluster_sum_z = np.random.rand(k)
-cluster_sum_w = np.random.rand(k)
-
-center_z = 0
-center_w = 0
-
-color_assign = []
 
 #clusters
-police_long = [-77.093449 , -77.048494,-76.943832,-76.990898,-77.064992,-77.148360,-77.132083,-77.234093,-77.262873, -77.236469]
-police_lat =  [38.983552, 39.058405,39.078524,39.045244,39.149304,39.083774,39.098038,39.149697,39.184389,39.113024]
-k_long = [-77.093449 , -77.048494,-76.943832,-76.990898,-77.064992,-77.148360,-77.132083,-77.234093,-77.262873, -77.236469]
-k_lat = [38.983552, 39.058405,39.078524,39.045244,39.149304,39.083774,39.098038,39.149697,39.184389,39.113024]
+k_long = [-77.236469,-77.093449 ,-76.990898,-77.048494,-77.262873, -77.234093]
+k_lat =[39.113024, 38.983552,39.045244,39.058405,39.184389,39.149697]
 
 colors_cluster = ['red','pink','black','blue','cyan','orange','purple','green','magenta','teal']
 
@@ -75,11 +42,7 @@ for row in columns:
     i_long.append(row[1])
     i_lat.append(row[0])
 
-for i in range(len(i_long)):
-    color_assign.append('grey')
 
-print("incident count:")
-print(len(columns))
 
 
 
