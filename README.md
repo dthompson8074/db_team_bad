@@ -1,4 +1,4 @@
-# db_team_bad
+# db_team_bad test changes 
 database project  
 Members: David Thompson, Ben, Antonio
 
